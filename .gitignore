@@ -1,3 +1,5 @@
+# Ignorar variables de entorno locales
+.env
 # Logs
 logs
 *.log
