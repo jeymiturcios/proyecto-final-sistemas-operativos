@@ -1,0 +1,73 @@
+# ================================
+# Docker Compose - App + PostgreSQL
+# ================================
+version: '3.8'
+
+services:
+  # ================================
+  # Aplicación Node.js
+  # ================================
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: node_app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DATABASE_URL=postgresql://postgres:postgres123@db:5432/proyecto_db
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3000/').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # ================================
+  # Base de Datos PostgreSQL
+  # ================================
+  db:
+    image: postgres:16-alpine
+    container_name: postgres_db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres123
+      - POSTGRES_DB=proyecto_db
+    ports:
+      - "5432:5432"
+    volumes:
+      # Volumen persistente para datos
+      - postgres_data:/var/lib/postgresql/data
+      # Script de inicialización (opcional)
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d proyecto_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+# ================================
+# Redes
+# ================================
+networks:
+  app-network:
+    driver: bridge
+
+# ================================
+# Volúmenes Persistentes
+# ================================
+volumes:
+  postgres_data:
+    driver: local
