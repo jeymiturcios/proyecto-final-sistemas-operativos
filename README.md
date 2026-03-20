@@ -1,1 +1,1 @@
-# proyecto-final-sistemas-operativos
+![CI](https://github.com/jeymiturcios/proyecto-final-sistemas-operativos/actions/workflows/ci.yml/badge.svg)
