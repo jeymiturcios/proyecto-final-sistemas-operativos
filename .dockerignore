@@ -1,0 +1,39 @@
+# Dependencias
+node_modules
+npm-debug.log
+
+# Git
+.git
+.gitignore
+
+# Archivos de entorno locales
+.env
+.env.local
+.env.*.local
+
+# IDE y editores
+.vscode
+.idea
+*.swp
+*.swo
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Logs
+logs
+*.log
+
+# Tests
+coverage
+.nyc_output
+
+# Docker
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# Documentación
+README.md
+*.md
